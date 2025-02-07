@@ -1,0 +1,1 @@
+/nix/store/591apldfgm1gr238rbfc8ib0y1z8ng2y-gcc-wrapper-14-20241116/bin/g++ -Wl,--dependency-file=CMakeFiles/testproj.dir/link.d CMakeFiles/testproj.dir/main.cpp.o CMakeFiles/testproj.dir/candle.cpp.o -o testproj
