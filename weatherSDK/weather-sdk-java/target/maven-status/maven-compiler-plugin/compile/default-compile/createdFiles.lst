@@ -1,0 +1,4 @@
+com/example/weather/WeatherSDK.class
+com/example/weather/WeatherSDKException.class
+com/example/weather/WeatherMode.class
+com/example/weather/CacheEntry.class
