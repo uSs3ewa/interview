@@ -1,5 +1,9 @@
 /home/stoat/interview/weatherSDK/weather-sdk-java/src/main/java/com/example/weather/Main.java
 /home/stoat/interview/weatherSDK/weather-sdk-java/src/main/java/com/example/weather/CacheEntry.java
+/home/stoat/interview/weatherSDK/weather-sdk-java/src/main/java/com/example/weather/PollingService.java
 /home/stoat/interview/weatherSDK/weather-sdk-java/src/main/java/com/example/weather/WeatherSDK.java
+/home/stoat/interview/weatherSDK/weather-sdk-java/src/main/java/com/weather/sdk/WeatherException.java
+/home/stoat/interview/weatherSDK/weather-sdk-java/src/main/java/com/weather/sdk/WeatherAPI.java
 /home/stoat/interview/weatherSDK/weather-sdk-java/src/main/java/com/example/weather/WeatherMode.java
+/home/stoat/interview/weatherSDK/weather-sdk-java/src/main/java/com/weather/sdk/WeatherData.java
 /home/stoat/interview/weatherSDK/weather-sdk-java/src/main/java/com/example/weather/WeatherSDKException.java

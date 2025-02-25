@@ -1,4 +1,13 @@
-com/example/weather/WeatherSDK.class
+com/weather/sdk/WeatherData$WeatherMain.class
+com/weather/sdk/WeatherData$Sys.class
+com/weather/sdk/WeatherData.class
+com/example/weather/PollingService.class
 com/example/weather/WeatherSDKException.class
-com/example/weather/WeatherMode.class
 com/example/weather/CacheEntry.class
+com/example/weather/WeatherSDK.class
+com/example/weather/WeatherMode.class
+com/weather/sdk/WeatherAPI.class
+com/weather/sdk/WeatherException.class
+com/example/weather/Main.class
+com/example/weather/PollingService$1.class
+com/weather/sdk/WeatherData$Wind.class

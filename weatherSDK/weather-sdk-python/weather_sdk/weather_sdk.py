@@ -1,7 +1,6 @@
 import threading
 import time
 from collections import OrderedDict
-from datetime import datetime
 
 import requests
 
@@ -25,7 +24,6 @@ class WeatherSDK:
         self._lock = threading.Lock()
 
         if self._mode == WeatherMode.POLLING:
-            # Start a background thread to periodically refresh data
             self._polling_thread = threading.Thread(
                 target=self._polling_loop, daemon=True
             )
@@ -36,34 +34,40 @@ class WeatherSDK:
     def get_weather(self, city: str) -> dict:
         if not city:
             raise WeatherSDKException("City name must not be empty")
+
         with self._lock:
             if city in self._cache:
                 data, ts = self._cache[city]
-                if (time.time() - ts) < 600:  # 600 seconds = 10 min
-                    # Return cached if <10 min
+                if (time.time() - ts) < 600:  # Cache valid for 10 min
                     return data
 
-        # If cache not valid, fetch new
         return self._fetch_and_cache_weather(city)
 
     def _fetch_and_cache_weather(self, city: str) -> dict:
         params = {"q": city, "appid": self._api_key, "units": "metric"}
-        resp = requests.get(self.OPENWEATHER_URL, params=params)
-        if not resp.ok:
-            raise WeatherSDKException(
-                f"Failed to fetch weather: HTTP {resp.status_code} {resp.text}"
-            )
-        data = resp.json()
-        with self._lock:
-            self._cache_weather(city, data)
-        return data
+        try:
+            resp = requests.get(self.OPENWEATHER_URL, params=params)
+            if resp.status_code == 401:
+                raise WeatherSDKException("Invalid API Key. Please check your API key.")
+            elif resp.status_code == 404:
+                raise WeatherSDKException(f"City '{city}' not found.")
+            elif not resp.ok:
+                raise WeatherSDKException(
+                    f"Failed to fetch weather: HTTP {resp.status_code} {resp.text}"
+                )
+
+            data = resp.json()
+            with self._lock:
+                self._cache_weather(city, data)
+            return data
+
+        except requests.exceptions.RequestException as e:
+            raise WeatherSDKException(f"Network error: {e}")
 
     def _cache_weather(self, city: str, data: dict):
-        # If new city and we have >= 10, pop oldest
         if city not in self._cache and len(self._cache) >= 10:
-            self._cache.popitem(last=False)  # pop first inserted
+            self._cache.popitem(last=False)
 
-        # If city in cache, remove it to re-insert
         if city in self._cache:
             del self._cache[city]
 
@@ -72,19 +76,14 @@ class WeatherSDK:
     def _polling_loop(self):
         while True:
             with self._lock:
-                for city in self._cache.keys():
+                for city in list(self._cache.keys()):
                     try:
                         self._fetch_and_cache_weather(city)
                     except WeatherSDKException:
                         pass
-            time.sleep(300)  # 5 minutes
+            time.sleep(300)
 
     def delete(self):
-        # Clean up
-        if self._mode == WeatherMode.POLLING and self._polling_thread:
-            # Thread is daemon, so it ends when the main process ends.
-            # We could implement an event to signal stop if we need a clean exit in this environment.
-            pass
         if self._api_key in _ACTIVE_KEYS:
             _ACTIVE_KEYS.remove(self._api_key)
         with self._lock:
